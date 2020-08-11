@@ -33,6 +33,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         tableView.delegate = self
         searchBar.delegate = self
         searchBar.enablesReturnKeyAutomatically = true
+        searchBar.showsCancelButton = true
         
     }
     
@@ -123,12 +124,17 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        //検索の流れを実装
-        //taskArrayに検索したものを入れる
-        //tableViewのリロード
-        let predicate = NSPredicate(format: Task.category)
+        
+        let predicate = NSPredicate(format: "category == %@", searchBar.text!)
         taskArray = realm.objects(Task.self).filter(predicate)
         tableView.reloadData()
     }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        taskArray = try!Realm().objects(Task.self).sorted(byKeyPath:"date",ascending:true)
+        tableView.reloadData()
+    }
+    
 }
 
